@@ -1,6 +1,8 @@
 package com.example.gistlistapp.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.widget.Toast;
 
 import com.example.gistlistapp.Objects.Gist;
 import com.example.gistlistapp.R;
+import com.example.gistlistapp.RecyclerView.AdapterGist;
 import com.example.gistlistapp.Retrofit.RetrofitService;
 import com.example.gistlistapp.Retrofit.ServiceGenerator;
 
@@ -21,15 +24,28 @@ import retrofit2.Response;
 
 public class ListScreen extends AppCompatActivity {
 
-    List<Gist> gistsResponse;
-    ProgressDialog progress;
+    private List<Gist> gistsResponse;
+    private ProgressDialog progress;
+    private RecyclerView recyclerView;
+    private AdapterGist adapterGist;
+    private RecyclerView.LayoutManager layoutManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_screen);
 
+        viewsConfigs();
+
         chamarAPI("0");
+    }
+
+    public void viewsConfigs(){
+        recyclerView = findViewById(R.id.rvList);
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
     }
 
     public void chamarAPI(String page){

@@ -6,6 +6,7 @@ public class Gist {
     private String created_at;
     private String description;
     private Owner owner;
+    private boolean favorite;
 
     public Gist(){}
 
@@ -39,5 +40,13 @@ public class Gist {
 
     public void setOwner(Owner owner) {
         this.owner = owner;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
     }
 }
