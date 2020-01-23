@@ -34,7 +34,7 @@ public class ListScreen extends AppCompatActivity {
 
     public void chamarAPI(String page){
         progress = new ProgressDialog(ListScreen.this);
-        progress.setTitle("enviando...");
+        progress.setTitle("Carregando...");
         progress.show();
 
         RetrofitService service = ServiceGenerator.createService((RetrofitService.class));
