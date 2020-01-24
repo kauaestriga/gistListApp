@@ -34,6 +34,9 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.0-alpha01'
     implementation 'com.google.android.material:material:1.2.0-alpha03'
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     //Picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
+    //Room (Persistencia de dados)
+    implementation "androidx.room:room-runtime:2.2.3"
 }

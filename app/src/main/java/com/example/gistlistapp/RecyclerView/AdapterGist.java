@@ -9,51 +9,75 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.gistlistapp.Favorite.AppDataBase;
+import com.example.gistlistapp.Favorite.User;
 import com.example.gistlistapp.Objects.Gist;
 import com.example.gistlistapp.R;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class AdapterGist extends RecyclerView.Adapter<AdapterGist.GistViewHolder> {
     private List<Gist> gists;
     private Context context;
+    private AppDataBase db;
 
     public static class GistViewHolder extends RecyclerView.ViewHolder{
-        public TextView tvName;
-        public TextView tvType;
-        public ImageView ivPhoto;
+        private TextView tvName;
+        private TextView tvType;
+        private ImageView ivPhoto;
+        private ImageView ivFavorite;
 
-        public GistViewHolder(View v){
+        private GistViewHolder(View v){
             super(v);
             tvName = v.findViewById(R.id.tvName);
             tvType = v.findViewById(R.id.tvType);
             ivPhoto = v.findViewById(R.id.ivPhoto);
+            ivFavorite = v.findViewById(R.id.ivFavorite);
         }
     }
 
-    public AdapterGist(List<Gist> gists, Context context){
+    public AdapterGist(List<Gist> gists, Context context, AppDataBase db){
         this.gists = gists;
         this.context = context;
+        this.db = db;
     }
 
     @Override
     public AdapterGist.GistViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_gist, parent, false);
-        GistViewHolder holder = new GistViewHolder(view);
-
-        return holder;
+        return new GistViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(AdapterGist.GistViewHolder holder, int position) {
+    public void onBindViewHolder(final AdapterGist.GistViewHolder holder, final int position) {
         holder.tvName.setText(gists.get(position).getOwner().getLogin());
-        holder.tvType.setText(gists.get(position).getType());
+        holder.tvType.setText(gists.get(position).getFiles().getType().equals("")? context.getString(R.string.typeUndefined) : gists.get(position).getFiles().getType());
         Picasso.get()
-                .load(gists.get(position).getOwner().getUrl())
+                .load(gists.get(position).getOwner().getAvatar_url())
                 .placeholder(R.drawable.user_placeholder)
                 .error(R.drawable.user_placeholder_error)
                 .into(holder.ivPhoto);
+        holder.ivFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Gist gist = gists.get(position);
+                User user = new User(gist.getOwner().getId(), gist.getOwner().getLogin(), gist.getOwner().getAvatar_url());
+
+                if (gist.isFavorite()) {
+                    gist.setFavorite(false);
+                    holder.ivFavorite.setImageResource(R.drawable.ic_favorite);
+                    db.userDao().deleteUser(user);
+                } else {
+                    gist.setFavorite(true);
+                    holder.ivFavorite.setImageResource(R.drawable.ic_favorite_selected);
+                    db.userDao().insertUser(user);
+                }
+            }
+        });
     }
 
     @Override

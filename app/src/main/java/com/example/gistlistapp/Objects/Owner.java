@@ -2,9 +2,17 @@ package com.example.gistlistapp.Objects;
 
 public class Owner {
 
+    private String id;
     private String login;
     private String avatar_url;
     private String url;
+
+    public Owner(){
+        setId("");
+        setLogin("");
+        setAvatar_url("");
+        setUrl("");
+    }
 
     public String getLogin() {
         return login;
@@ -28,5 +36,13 @@ public class Owner {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

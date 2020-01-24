@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">gistListApp</string>
     <string name="loadGistList">Load Gist List</string>
+    <string name="loading">Carregando...</string>
+    <string name="typeUndefined">Type não definido</string>
+    <string name="favorite">Favoritos</string>
+    <string name="list">Lista</string>
 </resources>

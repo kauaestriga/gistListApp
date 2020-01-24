@@ -2,20 +2,16 @@ package com.example.gistlistapp.Objects;
 
 public class Gist {
 
-    private String type;
     private String created_at;
     private String description;
     private Owner owner;
+    private Files files;
     private boolean favorite;
 
-    public Gist(){}
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
+    public Gist(){
+        setCreated_at("");
+        setDescription("");
+        setFavorite(false);
     }
 
     public String getCreated_at() {
@@ -48,5 +44,13 @@ public class Gist {
 
     public void setFavorite(boolean favorite) {
         this.favorite = favorite;
+    }
+
+    public Files getFiles() {
+        return files;
+    }
+
+    public void setFiles(Files files) {
+        this.files = files;
     }
 }
