@@ -5,4 +5,8 @@
     <string name="typeUndefined">Type não definido</string>
     <string name="favorite">Favoritos</string>
     <string name="list">Lista</string>
+    <string name="favoriteNull">Nenhum favorito adicionado</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
