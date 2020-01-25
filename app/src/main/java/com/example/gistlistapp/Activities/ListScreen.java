@@ -33,7 +33,7 @@ public class ListScreen extends AppCompatActivity implements GistList.OnFragment
         db = Room.databaseBuilder(getApplicationContext(), AppDataBase.class, "user").allowMainThreadQueries().build();
 
         ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.fragment_content, FavoriteList.newInstance(db));
+        ft.add(R.id.fragment_content, GistList.newInstance(db));
         ft.commit();
         inFavorite = false;
     }

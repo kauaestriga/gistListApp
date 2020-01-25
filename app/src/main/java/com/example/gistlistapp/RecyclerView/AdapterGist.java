@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.gistlistapp.Favorite.AppDataBase;
 import com.example.gistlistapp.Favorite.User;
+import com.example.gistlistapp.Objects.Files;
 import com.example.gistlistapp.Objects.Gist;
 import com.example.gistlistapp.R;
 import com.google.gson.Gson;
@@ -55,7 +56,10 @@ public class AdapterGist extends RecyclerView.Adapter<AdapterGist.GistViewHolder
     @Override
     public void onBindViewHolder(final AdapterGist.GistViewHolder holder, final int position) {
         holder.tvName.setText(gists.get(position).getOwner().getLogin());
-        holder.tvType.setText(gists.get(position).getFiles().getType().equals("")? context.getString(R.string.typeUndefined) : gists.get(position).getFiles().getType());
+        String valueType = "";
+        for (Map.Entry<String, Files> entry : gists.get(position).getResult().entrySet())
+            valueType = entry.getValue().getType();
+        holder.tvType.setText(valueType.equals("")? context.getString(R.string.typeUndefined) : valueType);
         Picasso.get()
                 .load(gists.get(position).getOwner().getAvatar_url())
                 .placeholder(R.drawable.user_placeholder)

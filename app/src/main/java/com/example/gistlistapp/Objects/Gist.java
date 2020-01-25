@@ -1,11 +1,26 @@
 package com.example.gistlistapp.Objects;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.Map;
+
 public class Gist {
 
     private String created_at;
     private String description;
     private Owner owner;
-    private Files files;
+    @SerializedName("files")
+    @Expose
+    private Map<String, Files> result;
+
+    public Map<String, Files> getResult() {
+        return result;
+    }
+
+    public void setResult(Map<String, Files> result) {
+        this.result = result;
+    }
     private boolean favorite;
 
     public Gist(){
@@ -46,11 +61,11 @@ public class Gist {
         this.favorite = favorite;
     }
 
-    public Files getFiles() {
-        return files;
-    }
-
-    public void setFiles(Files files) {
-        this.files = files;
-    }
+//    public Files getFiles() {
+//        return files;
+//    }
+//
+//    public void setFiles(Files files) {
+//        this.files = files;
+//    }
 }
