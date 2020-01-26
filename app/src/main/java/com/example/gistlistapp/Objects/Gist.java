@@ -8,7 +8,6 @@ import java.util.Map;
 public class Gist {
 
     private String created_at;
-    private String description;
     private Owner owner;
     @SerializedName("files")
     @Expose
@@ -25,7 +24,6 @@ public class Gist {
 
     public Gist(){
         setCreated_at("");
-        setDescription("");
         setFavorite(false);
     }
 
@@ -35,14 +33,6 @@ public class Gist {
 
     public void setCreated_at(String created_at) {
         this.created_at = created_at;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public Owner getOwner() {
@@ -60,12 +50,4 @@ public class Gist {
     public void setFavorite(boolean favorite) {
         this.favorite = favorite;
     }
-
-//    public Files getFiles() {
-//        return files;
-//    }
-//
-//    public void setFiles(Files files) {
-//        this.files = files;
-//    }
 }

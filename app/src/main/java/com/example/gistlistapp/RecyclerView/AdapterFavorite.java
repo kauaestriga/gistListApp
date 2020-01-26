@@ -1,13 +1,17 @@
 package com.example.gistlistapp.RecyclerView;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ThemedSpinnerAdapter;
 
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Database;
+import androidx.room.Room;
 
 import com.example.gistlistapp.Favorite.AppDataBase;
 import com.example.gistlistapp.Favorite.User;
@@ -20,7 +24,7 @@ import java.util.List;
 public class AdapterFavorite extends RecyclerView.Adapter<AdapterFavorite.FavoriteViewHolder> {
     private List<User> users;
     private Context context;
-    private AppDataBase db;
+    private static AppDataBase db;
 
     public static class FavoriteViewHolder extends RecyclerView.ViewHolder{
         private TextView tvNameFavorite;
@@ -35,10 +39,14 @@ public class AdapterFavorite extends RecyclerView.Adapter<AdapterFavorite.Favori
         }
     }
 
-    public AdapterFavorite(List<User> users, Context context, AppDataBase db){
-        this.users = users;
+    public AdapterFavorite(Context context){
         this.context = context;
-        this.db = db;
+        this.db = Room.databaseBuilder(context, AppDataBase.class, "mydb")
+            .build();
+    }
+
+    public void setUsers(List<User> users){
+        this.users = users;
     }
 
     @Override
@@ -58,7 +66,9 @@ public class AdapterFavorite extends RecyclerView.Adapter<AdapterFavorite.Favori
         holder.ivDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                db.userDao().deleteUser(users.get(position));
+                deleteUser(users.get(position));
+                users.remove(position);
+                notifyDataSetChanged();
             }
         });
     }
@@ -66,5 +76,15 @@ public class AdapterFavorite extends RecyclerView.Adapter<AdapterFavorite.Favori
     @Override
     public int getItemCount() {
         return users.size();
+    }
+
+    public static void deleteUser(final User user){
+        new AsyncTask<Void, Void, Void>(){
+            @Override
+            protected Void doInBackground(Void... voids) {
+                db.userDao().deleteUser(user);
+                return null;
+            }
+        }.execute();
     }
 }

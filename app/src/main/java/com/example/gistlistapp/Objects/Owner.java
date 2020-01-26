@@ -5,13 +5,13 @@ public class Owner {
     private String id;
     private String login;
     private String avatar_url;
-    private String url;
+    private String html_url;
 
     public Owner(){
         setId("");
         setLogin("");
         setAvatar_url("");
-        setUrl("");
+        setHtml_url("");
     }
 
     public String getLogin() {
@@ -30,12 +30,12 @@ public class Owner {
         this.avatar_url = avatar_url;
     }
 
-    public String getUrl() {
-        return url;
+    public String getHtml_url() {
+        return html_url;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setHtml_url(String html_url) {
+        this.html_url = html_url;
     }
 
     public String getId() {

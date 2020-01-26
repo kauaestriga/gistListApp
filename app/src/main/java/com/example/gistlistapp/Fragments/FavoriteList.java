@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -33,24 +34,22 @@ public class FavoriteList extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     private Context context;
-    private ProgressDialog progress;
-    private RecyclerView recyclerView;
+    private static RecyclerView recyclerView;
     private AdapterFavorite adapterFavorite;
     private RecyclerView.LayoutManager layoutManager;
     private SwipeRefreshLayout srlRecycler;
 
-    private static final String DATABASE = "database";
-    private AppDataBase db;
-    List<User> users;
+    private static AppDataBase db;
+    private static List<User> users;
 
     public FavoriteList() {
         // Required empty public constructor
     }
 
-    public static FavoriteList newInstance(AppDataBase appDataBase) {
+    public static FavoriteList newInstance(/*AppDataBase appDataBase*/) {
         FavoriteList fragment = new FavoriteList();
         Bundle args = new Bundle();
-        args.putSerializable(DATABASE, appDataBase);
+//        args.putSerializable(DATABASE, appDataBase);
         fragment.setArguments(args);
         return fragment;
     }
@@ -58,9 +57,9 @@ public class FavoriteList extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            db = (AppDataBase) getArguments().getSerializable(DATABASE);
-        }
+//        if (getArguments() != null) {
+//            db = (AppDataBase) getArguments().getSerializable(DATABASE);
+//        }
     }
 
     @Override
@@ -92,45 +91,13 @@ public class FavoriteList extends Fragment {
             }
         });
 
-        db = Room.databaseBuilder(context, AppDataBase.class, "user").build();
         carregarBanco();
     }
 
     public void carregarBanco(){
-        if (!srlRecycler.isRefreshing()) {
-            progress = new ProgressDialog(context);
-            progress.setTitle(R.string.loading);
-            progress.show();
-        }
-
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                users = db.userDao().getAll();
-            }
-        }).start();
-
-        if (users == null){
-            AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-            alertDialog.setTitle("Aviso");
-            alertDialog.setMessage(context.getString(R.string.favoriteNull));
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-            alertDialog.show();
-        } else {
-            adapterFavorite = new AdapterFavorite(users, context, db);
-            recyclerView.setAdapter(adapterFavorite);
-        }
-
-        if (srlRecycler.isRefreshing())
-            srlRecycler.setRefreshing(false);
-
-        progress.dismiss();
+        db = Room.databaseBuilder(context, AppDataBase.class, "mydb").build();
+        adapterFavorite = new AdapterFavorite(context);
+        carregarUsers(context, srlRecycler, adapterFavorite);
     }
 
     @Override
@@ -154,5 +121,51 @@ public class FavoriteList extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public static void carregarUsers(final Context context, final SwipeRefreshLayout srl, final AdapterFavorite adapter){
+        new AsyncTask<Void, Void, Void>(){
+            private ProgressDialog progress = new ProgressDialog(context);
+
+            @Override
+            protected void onPreExecute() {
+                if (!srl.isRefreshing()) {
+                    progress.setTitle(R.string.loading);
+                    progress.show();
+                }
+                super.onPreExecute();
+            }
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                users = db.userDao().getAll();
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                if (users == null){
+                    AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+                    alertDialog.setTitle("Aviso");
+                    alertDialog.setMessage(context.getString(R.string.favoriteNull));
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
+                } else {
+                    adapter.setUsers(users);
+                    recyclerView.setAdapter(adapter);
+                }
+
+                if (srl.isRefreshing())
+                    srl.setRefreshing(false);
+
+                progress.dismiss();
+                super.onPostExecute(aVoid);
+            }
+        }.execute();
     }
 }

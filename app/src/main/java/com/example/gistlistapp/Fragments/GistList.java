@@ -3,6 +3,7 @@ package com.example.gistlistapp.Fragments;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.Toolbar;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.gistlistapp.Activities.ListScreen;
 import com.example.gistlistapp.Favorite.AppDataBase;
+import com.example.gistlistapp.Favorite.User;
 import com.example.gistlistapp.Objects.Gist;
 import com.example.gistlistapp.R;
 import com.example.gistlistapp.RecyclerView.AdapterGist;
@@ -45,17 +47,16 @@ public class GistList extends Fragment {
     private RecyclerView.LayoutManager layoutManager;
     private SwipeRefreshLayout srlRecycler;
 
-    private AppDataBase db;
-    private static final String DATABASE = "database";
+    private static AppDataBase db;
 
     public GistList() {
         // Required empty public constructor
     }
 
-    public static GistList newInstance(AppDataBase appDataBase) {
+    public static GistList newInstance(/*AppDataBase appDataBase*/) {
         GistList fragment = new GistList();
         Bundle args = new Bundle();
-        args.putSerializable(DATABASE, appDataBase);
+//        args.putSerializable(DATABASE, appDataBase);
         fragment.setArguments(args);
         return fragment;
     }
@@ -63,9 +64,10 @@ public class GistList extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            db = (AppDataBase) getArguments().getSerializable(DATABASE);
-        }
+//        if (getArguments() != null) {
+//            db = (AppDataBase) getArguments().getSerializable(DATABASE);
+//        }
+        db = Room.databaseBuilder(context, AppDataBase.class, "mydb").build();
     }
 
     @Override
@@ -128,10 +130,6 @@ public class GistList extends Fragment {
                     // segura os erros de requisição
                     ResponseBody errorBody = response.errorBody();
                 }
-
-                progress.dismiss();
-                if (srlRecycler.isRefreshing())
-                    srlRecycler.setRefreshing(false);
             }
 
             @Override
@@ -146,8 +144,12 @@ public class GistList extends Fragment {
     }
 
     public void setResponseList(List<Gist> gists){
-        adapterGist = new AdapterGist(gists, context, db);
+        adapterGist = new AdapterGist(gists, context);
         recyclerView.setAdapter(adapterGist);
+
+        progress.dismiss();
+        if (srlRecycler.isRefreshing())
+            srlRecycler.setRefreshing(false);
     }
 
     @Override

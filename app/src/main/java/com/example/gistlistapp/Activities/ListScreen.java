@@ -8,6 +8,8 @@ import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.room.Room;
 
@@ -18,39 +20,39 @@ import com.example.gistlistapp.R;
 
 public class ListScreen extends AppCompatActivity implements GistList.OnFragmentInteractionListener, FavoriteList.OnFragmentInteractionListener {
 
-    private FragmentTransaction ft;
-    private AppDataBase db;
+    private FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
     private boolean inFavorite;
+    private Toolbar myToolbar;
+    private GistList fmGist = new GistList();
+    private FavoriteList fmFavorite = new FavoriteList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_screen);
 
-        Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        db = Room.databaseBuilder(getApplicationContext(), AppDataBase.class, "user").allowMainThreadQueries().build();
-
-        ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.fragment_content, GistList.newInstance(db));
+        ft.add(R.id.fragment_content, fmGist);
         ft.commit();
         inFavorite = false;
+        myToolbar.setTitle(R.string.list);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_favorite:
-                ft.replace(R.id.fragment_content, FavoriteList.newInstance(db));
-                ft.commit();
+                openFragment(fmFavorite);
                 inFavorite = true;
+                myToolbar.setTitle(R.string.favorite);
                 invalidateOptionsMenu();
                 break;
             case R.id.action_list:
-                ft.replace(R.id.fragment_content, GistList.newInstance(db));
-                ft.commit();
+                openFragment(fmGist);
                 inFavorite = false;
+                myToolbar.setTitle(R.string.list);
                 invalidateOptionsMenu();
                 break;
         }
@@ -69,6 +71,15 @@ public class ListScreen extends AppCompatActivity implements GistList.OnFragment
     }
     @Override
     public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    private void openFragment(final Fragment fragment)   {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.fragment_content, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
 
     }
 }

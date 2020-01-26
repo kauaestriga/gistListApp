@@ -1,16 +1,17 @@
 package com.example.gistlistapp.Favorite;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity
+@Entity(tableName = "users")
 public class User {
 
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    @NonNull private Long id;
 
-    @ColumnInfo(name = "userId")
+    @ColumnInfo(name = "user_id")
     private String userId;
 
     @ColumnInfo(name = "login")
@@ -43,10 +44,6 @@ public class User {
         this.avatarUrl = avatarUrl;
     }
 
-    public int getId() {
-        return id;
-    }
-
     public String getUserId() {
         return userId;
     }
@@ -55,7 +52,12 @@ public class User {
         this.userId = userId;
     }
 
-    public void setId(int id) {
+    @NonNull
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(@NonNull Long id) {
         this.id = id;
     }
 }
