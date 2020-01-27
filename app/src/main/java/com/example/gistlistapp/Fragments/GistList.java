@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
@@ -27,6 +28,7 @@ import com.example.gistlistapp.R;
 import com.example.gistlistapp.RecyclerView.AdapterGist;
 import com.example.gistlistapp.Retrofit.RetrofitService;
 import com.example.gistlistapp.Retrofit.ServiceGenerator;
+import com.example.gistlistapp.Utils.PaginationScrollListener;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -41,22 +43,25 @@ public class GistList extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     private Context context;
-    private ProgressDialog progress;
     private RecyclerView recyclerView;
     private AdapterGist adapterGist;
-    private RecyclerView.LayoutManager layoutManager;
     private SwipeRefreshLayout srlRecycler;
+    private RetrofitService service;
 
-    private static AppDataBase db;
+    private static final int PAGE_START = 0;
+    private LinearLayoutManager linearLayoutManager;
+    private boolean isLoading = false;
+    private boolean isLastPage = false;
+    private static final int TOTAL_PAGES = 5;
+    private int currentPage = PAGE_START;
 
     public GistList() {
         // Required empty public constructor
     }
 
-    public static GistList newInstance(/*AppDataBase appDataBase*/) {
+    public static GistList newInstance() {
         GistList fragment = new GistList();
         Bundle args = new Bundle();
-//        args.putSerializable(DATABASE, appDataBase);
         fragment.setArguments(args);
         return fragment;
     }
@@ -64,10 +69,8 @@ public class GistList extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
-//            db = (AppDataBase) getArguments().getSerializable(DATABASE);
-//        }
-        db = Room.databaseBuilder(context, AppDataBase.class, "mydb").build();
+
+        service = ServiceGenerator.createService((RetrofitService.class));
     }
 
     @Override
@@ -90,33 +93,60 @@ public class GistList extends Fragment {
     public void viewsConfigs(View view){
         recyclerView = view.findViewById(R.id.rvGistList);
         recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(context);
-        recyclerView.setLayoutManager(layoutManager);
+
+        linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        recyclerView.addOnScrollListener(new PaginationScrollListener(linearLayoutManager) {
+            @Override
+            protected void loadMoreItems() {
+                isLoading = true;
+                currentPage += 1;
+
+                loadNextPage();
+            }
+
+            @Override
+            public int getTotalPageCount() {
+                return TOTAL_PAGES;
+            }
+
+            @Override
+            public boolean isLastPage() {
+                return isLastPage;
+            }
+
+            @Override
+            public boolean isLoading() {
+                return isLoading;
+            }
+        });
 
         srlRecycler = view.findViewById(R.id.srlGistList);
         srlRecycler.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                chamarAPI("0");
+                doRefresh();
             }
         });
 
-        chamarAPI("0");
+        loadFirstPage();
     }
 
-    public void chamarAPI(String page){
-        if (!srlRecycler.isRefreshing()) {
-            progress = new ProgressDialog(context);
-            progress.setTitle(R.string.loading);
-            progress.show();
-        }
+    private Call<List<Gist>> callGistListApi(){
+        return service.loadGists(String.valueOf(currentPage));
+    }
 
-        RetrofitService service = ServiceGenerator.createService((RetrofitService.class));
+    private void loadFirstPage() {
+        currentPage = PAGE_START;
+        srlRecycler.setRefreshing(true);
 
-        Call<List<Gist>> call = service.loadGists();
-        call.enqueue(new Callback<List<Gist>>() {
+        callGistListApi().enqueue(new Callback<List<Gist>> () {
             @Override
             public void onResponse(Call<List<Gist>> call, Response<List<Gist>> response) {
+                srlRecycler.setRefreshing(true);
+
                 if (response.isSuccessful()){
 
                     if (response.body() != null) {
@@ -127,27 +157,61 @@ public class GistList extends Fragment {
                     }
                 } else {
                     Toast.makeText(context,"Resposta não foi sucesso", Toast.LENGTH_SHORT).show();
-                    // segura os erros de requisição
-                    ResponseBody errorBody = response.errorBody();
                 }
+
+
+                if (currentPage <= TOTAL_PAGES)
+                    adapterGist.addLoadingFooter();
+                else
+                    isLastPage = true;
+
+                if (srlRecycler.isRefreshing())
+                    srlRecycler.setRefreshing(false);
             }
 
             @Override
             public void onFailure(Call<List<Gist>> call, Throwable t) {
-                Toast.makeText(context,"Erro na chamada ao servidor", Toast.LENGTH_SHORT).show();
-                progress.dismiss();
-                if (srlRecycler.isRefreshing())
-                    srlRecycler.setRefreshing(false);
-                t.printStackTrace();
             }
         });
+    }
+
+    private void loadNextPage() {
+        callGistListApi().enqueue(new Callback<List<Gist>>() {
+            @Override
+            public void onResponse(Call<List<Gist>> call, Response<List<Gist>> response) {
+
+                adapterGist.removeLoadingFooter();
+                isLoading = false;
+
+                adapterGist.addAll(response.body());
+
+                if (currentPage != TOTAL_PAGES)
+                    adapterGist.addLoadingFooter();
+                else
+                    isLastPage = true;
+            }
+
+            @Override
+            public void onFailure(Call<List<Gist>> call, Throwable t) {
+            }
+        });
+    }
+
+    private void doRefresh() {
+        srlRecycler.setRefreshing(true);
+
+        if (callGistListApi().isExecuted())
+            callGistListApi().cancel();
+
+        adapterGist.clear();
+        adapterGist.notifyDataSetChanged();
+        loadFirstPage();
     }
 
     public void setResponseList(List<Gist> gists){
         adapterGist = new AdapterGist(gists, context);
         recyclerView.setAdapter(adapterGist);
 
-        progress.dismiss();
         if (srlRecycler.isRefreshing())
             srlRecycler.setRefreshing(false);
     }

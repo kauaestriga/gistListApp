@@ -20,8 +20,6 @@ public class User {
     @ColumnInfo(name = "avatar_url")
     private String avatarUrl;
 
-//    public User(){}
-
     public User(String userId, String login, String avatarUrl){
         this.setUserId(userId);
         this.setLogin(login);

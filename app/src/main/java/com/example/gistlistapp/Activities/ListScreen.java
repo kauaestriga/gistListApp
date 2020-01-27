@@ -11,9 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.room.Room;
 
-import com.example.gistlistapp.Favorite.AppDataBase;
 import com.example.gistlistapp.Fragments.FavoriteList;
 import com.example.gistlistapp.Fragments.GistList;
 import com.example.gistlistapp.R;
@@ -32,6 +30,7 @@ public class ListScreen extends AppCompatActivity implements GistList.OnFragment
         setContentView(R.layout.activity_list_screen);
 
         myToolbar = findViewById(R.id.my_toolbar);
+        myToolbar.setTitle(R.string.list);
         setSupportActionBar(myToolbar);
 
         ft.add(R.id.fragment_content, fmGist);

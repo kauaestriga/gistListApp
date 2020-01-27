@@ -20,6 +20,7 @@ public class Gist {
     public void setResult(Map<String, Files> result) {
         this.result = result;
     }
+
     private boolean favorite;
 
     public Gist(){

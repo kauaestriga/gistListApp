@@ -7,15 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.ThemedSpinnerAdapter;
 
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Database;
 import androidx.room.Room;
 
 import com.example.gistlistapp.Favorite.AppDataBase;
 import com.example.gistlistapp.Favorite.User;
-import com.example.gistlistapp.Objects.Gist;
 import com.example.gistlistapp.R;
 import com.squareup.picasso.Picasso;
 

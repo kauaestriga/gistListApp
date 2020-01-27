@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Gist List</string>
+    <string name="app_name">GistHub List</string>
     <string name="loadGistList">Load Gist List</string>
     <string name="loading">Carregando…</string>
     <string name="typeUndefined">Type não definido</string>
@@ -8,6 +8,8 @@
     <string name="favoriteNull">Nenhum favorito adicionado</string>
     <string name="accessProfileUser">Acessar perfil do usuário</string>
     <string name="created">Criado em %s</string>
+    <string name="error_msg_unknown">Um erro inesperado ocorreu</string>
+    <string name="tap_to_reload">Toque para recarregar</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

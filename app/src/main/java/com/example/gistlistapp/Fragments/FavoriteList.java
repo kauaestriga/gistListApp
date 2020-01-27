@@ -46,10 +46,9 @@ public class FavoriteList extends Fragment {
         // Required empty public constructor
     }
 
-    public static FavoriteList newInstance(/*AppDataBase appDataBase*/) {
+    public static FavoriteList newInstance() {
         FavoriteList fragment = new FavoriteList();
         Bundle args = new Bundle();
-//        args.putSerializable(DATABASE, appDataBase);
         fragment.setArguments(args);
         return fragment;
     }
@@ -57,9 +56,6 @@ public class FavoriteList extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
-//            db = (AppDataBase) getArguments().getSerializable(DATABASE);
-//        }
     }
 
     @Override
