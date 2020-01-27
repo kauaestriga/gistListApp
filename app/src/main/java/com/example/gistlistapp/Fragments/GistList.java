@@ -52,7 +52,7 @@ public class GistList extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private boolean isLoading = false;
     private boolean isLastPage = false;
-    private static final int TOTAL_PAGES = 5;
+//    private static final int TOTAL_PAGES = 5;
     private int currentPage = PAGE_START;
 
     public GistList() {
@@ -109,7 +109,7 @@ public class GistList extends Fragment {
 
             @Override
             public int getTotalPageCount() {
-                return TOTAL_PAGES;
+                return 0;
             }
 
             @Override
@@ -160,10 +160,10 @@ public class GistList extends Fragment {
                 }
 
 
-                if (currentPage <= TOTAL_PAGES)
+//                if (currentPage <= TOTAL_PAGES)
                     adapterGist.addLoadingFooter();
-                else
-                    isLastPage = true;
+//                else
+//                    isLastPage = true;
 
                 if (srlRecycler.isRefreshing())
                     srlRecycler.setRefreshing(false);
@@ -185,10 +185,10 @@ public class GistList extends Fragment {
 
                 adapterGist.addAll(response.body());
 
-                if (currentPage != TOTAL_PAGES)
+//                if (currentPage != TOTAL_PAGES)
                     adapterGist.addLoadingFooter();
-                else
-                    isLastPage = true;
+//                else
+//                    isLastPage = true;
             }
 
             @Override

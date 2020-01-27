@@ -9,7 +9,8 @@
         android:id="@+id/loadmore_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:theme="@style/AppTheme"/>
 
     <LinearLayout
         android:id="@+id/loadmore_errorlayout"
@@ -17,6 +18,7 @@
         android:layout_height="match_parent"
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
+        android:focusable="true"
         android:orientation="horizontal"
         android:paddingBottom="@dimen/activity_margin"
         android:paddingTop="@dimen/activity_margin"
@@ -28,7 +30,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="@dimen/activity_margin_content"
             android:layout_marginStart="@dimen/activity_margin_content"
             android:background="@drawable/rety_selector"
             android:padding="@dimen/activity_margin_half"
@@ -41,8 +42,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/activity_margin_content"
-            android:layout_marginLeft="@dimen/activity_margin"
-            android:layout_marginRight="@dimen/activity_margin_content"
             android:layout_marginStart="@dimen/activity_margin"
             android:gravity="center_vertical"
             android:orientation="vertical">

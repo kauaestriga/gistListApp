@@ -6,7 +6,7 @@
     <color name="colorSecondary">#FFFFFF</color>
     <color name="colorSecondaryLight">#FFFFFF</color>
     <color name="colorSecondaryDark">#FFFFFF</color>
-    <color name="colorAccent">#ffffff</color>
+    <color name="colorAccent">#000000</color>
     <color name="placeholder_grey">#AAADC4</color>
     <color name="placeholder_grey_20">#33AAADC4</color>
 </resources>
