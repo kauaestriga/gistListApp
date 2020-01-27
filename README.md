@@ -1,2 +1,2 @@
-# gistListApp
-Projeto de listagem para Netshoes
+# GistHub List
+Projeto de listagem de API do GitHub para Netshoes
