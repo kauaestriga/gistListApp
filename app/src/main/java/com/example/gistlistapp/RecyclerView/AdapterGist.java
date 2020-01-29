@@ -224,8 +224,8 @@ public class AdapterGist extends RecyclerView.Adapter<AdapterGist.GistViewHolder
             e.printStackTrace();
         }
 
-        SimpleDateFormat sdf2 = new SimpleDateFormat("dd/M/yyyy");
-        return sdf2.format(date.getTime());
+        SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
+        return sdf2.format(date);
     }
 
     /*
